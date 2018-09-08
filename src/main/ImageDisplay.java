@@ -54,9 +54,9 @@ public class ImageDisplay extends Canvas {
 	
 	public void paint(Graphics g) {
 		if (img != null) {
-			for (int y = 0; y < img.getHeight(); y++) {
-				for (int x = 0; x < img.getWidth(); x++) {
-					Color tc = new Color(img.getRGB(x,y)); //(x * img.getWidth() / getWidth(), y * img.getHeight() / getHeight()));
+			for (int y = 0; y < getHeight(); y++) {
+				for (int x = 0; x < getWidth(); x++) {
+					Color tc = new Color(img.getRGB(x * img.getWidth() / getWidth(), y * img.getHeight() / getHeight()));
 					float hsbVals[] = Color.RGBtoHSB(tc.getRed(), tc.getGreen(), tc.getBlue(), null);
 					Color color2;
 					if (mode == 0) {
@@ -76,14 +76,18 @@ public class ImageDisplay extends Canvas {
 		try {
 			img = ImageIO.read(this.file);
 			// divide the larger value by the panel value and use that to find the value that the picture must be reduced by
-			/*while (img.getWidth() > 880 || img.getHeight() > 680) {
-			
-			}*/
-			this.setSize(new Dimension(img.getWidth(), img.getHeight()));
+			int lm = 1;
+			if (img.getWidth() > 880 || img.getHeight() > 680) {
+				int wm = img.getWidth() / 880;
+				int vm = img.getHeight() / 680;
+				lm = wm > vm ? wm : vm;
+			}
+			this.setSize(new Dimension(img.getWidth() / lm, img.getHeight() / lm));
+			this.setVisible(true);
 		} catch(Exception e) {
 			System.out.println("Fail to open image.");
 		}
-		repaint();//0, 0, getWidth(), getHeight());
+		//repaint();//0, 0, getWidth(), getHeight());
 	}
 
 }
