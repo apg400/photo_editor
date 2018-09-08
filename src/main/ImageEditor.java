@@ -26,23 +26,24 @@ public class ImageEditor {
 	private AdjustBar topBar;
 	private Panel controlPanel;
 	private Panel photoPanel;
+	private TopMenu menu;
 	
 	public ImageEditor() {
 		view = new JFrame();
 		save = new Button("SAVE");
-		loadFD = new FileDialog(view, "Choose an image...", FileDialog.LOAD);
-		saveFD = new FileDialog(view, "Save image...", FileDialog.SAVE);
+		//saveFD = new FileDialog(view, "Save image...", FileDialog.SAVE);
 		id = new ImageDisplay();
 		topBar = new AdjustBar();
+		menu = new TopMenu();
 		
 		view.setLayout(new BorderLayout());
 		//view.setPreferredSize(new Dimension(1200, 800));
-		view.setSize(1100, 680);
+		view.setSize(1100, 700);
 		view.setTitle("Photo Editor");
 		view.setIconImage(new ImageIcon("attributes/photo_icon.png").getImage());
+		view.setJMenuBar(menu);
 		view.setResizable(false);
 		view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//view.add(id, BorderLayout.CENTER);
 		view.setVisible(true);
 		view.setLocationRelativeTo(null);
 		
@@ -58,11 +59,12 @@ public class ImageEditor {
 		photoPanel = new Panel();
 		//photoPanel.setLayout(new BorderLayout());
 		photoPanel.setVisible(true);
-		photoPanel.setBackground(Color.CYAN);
+		photoPanel.setBackground(Color.LIGHT_GRAY);
 		photoPanel.setPreferredSize(new Dimension(880, 680));
 		photoPanel.add(id);
 		view.add(photoPanel, BorderLayout.CENTER);
 		
+		loadFD = new FileDialog(view, "Choose an image...", FileDialog.LOAD);
 		loadFD.setVisible(true);
 		File f = new File(loadFD.getDirectory() + loadFD.getFile());
 		if (f.exists()) {
