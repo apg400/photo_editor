@@ -77,16 +77,18 @@ public class ImageDisplay extends Canvas {
 			img = ImageIO.read(this.file);
 			// divide the larger value by the panel value and use that to find the value that the picture must be reduced by
 			int lm = 1;
-			if (img.getWidth() > 880 || img.getHeight() > 680) {
-				int wm = img.getWidth() / 880;
-				int vm = img.getHeight() / 680;
+			if (img.getWidth() > 870 || img.getHeight() > 640) {
+				int wm = img.getWidth() / 870 + 1;
+				int vm = img.getHeight() / 640 + 1;
 				lm = wm > vm ? wm : vm;
 			}
+			this.setPreferredSize(new Dimension(img.getWidth() / lm, img.getHeight() / lm));
 			this.setSize(new Dimension(img.getWidth() / lm, img.getHeight() / lm));
 			this.setVisible(true);
 		} catch(Exception e) {
 			System.out.println("Fail to open image.");
 		}
+		//System.out.printf("ID height: %d\nwidth: %d\n", this.getHeight(), this.getWidth());
 		//repaint();//0, 0, getWidth(), getHeight());
 	}
 
