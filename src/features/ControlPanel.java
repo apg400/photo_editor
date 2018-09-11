@@ -39,14 +39,26 @@ public class ControlPanel extends Panel {
 		for (int i = 0; i < adjustBars.length; i++) {
 			labels[i] = new JLabel(text[i]);
 			labels[i].setBackground(Color.RED);
-			//labels[i].setAlignmentX(Component.LEFT_ALIGNMENT);
 			labels[i].setHorizontalAlignment(JLabel.LEFT);
 			labels[i].setVerticalAlignment(JLabel.BOTTOM);
 			adjustPanel.add(labels[i]);
 			adjustBars[i] = new AdjustBar();
+			adjustBars[i].setEnabled(false);
 			adjustPanel.add(adjustBars[i]);
 		}
 		this.add(adjustPanel);
+	}
+	
+	public void reset() {
+		for (int i = 0; i < adjustBars.length; i++) {
+			adjustBars[i].reset();
+		}
+	}
+	
+	public void setAdjustable(boolean b) {
+		for (int i = 0; i < adjustBars.length; i++) {
+			adjustBars[i].setEnabled(b);
+		}
 	}
 	
 	

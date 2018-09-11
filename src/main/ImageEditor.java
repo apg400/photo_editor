@@ -28,9 +28,9 @@ public class ImageEditor extends JFrame {
 	private ImageDisplay id;
 	
 	public ImageEditor() {
-		id = new ImageDisplay();
 		menu = new TopMenu(this);
 		cpanel = new ControlPanel();
+		id = new ImageDisplay(cpanel);
 		
 		setLayout(new BorderLayout());
 		setSize(1100, 700);

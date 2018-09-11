@@ -50,6 +50,21 @@ public class AdjustBar extends Canvas implements MouseListener, MouseMotionListe
 		repaint();
 	}
 	
+	public void reset() {
+		Graphics2D g = (Graphics2D) screen.getGraphics();
+		g.setColor(Color.white ); //yellow to see size of canvas
+		g.fillRect(0, 0, getWidth(), getHeight());
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawLine(30, height, getWidth()-30, height);
+		g.drawLine(30, height - 5, 30, height + 5);
+		g.drawLine(getWidth()-30, height - 5, getWidth()-30, height + 5);
+		g.setColor(Color.BLACK);
+		g.drawLine(getWidth()/2, height - 8, getWidth()/2, height - 16);
+		g.setColor(Color.GRAY);
+		g.fillOval(getWidth()/2 - 6, height - 6, 12, 12);
+		repaint();
+	}
+	
 	public void onClick(MouseEvent e) {
 		if (e.getX() > 30 && e.getX() < getWidth()-30 && isPressed) {
 			xpxl = e.getX() - 6;

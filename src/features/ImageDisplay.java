@@ -14,8 +14,10 @@ public class ImageDisplay extends Canvas {
 	
 	private File file;
 	private BufferedImage img;
+	private ControlPanel cpanel;
 	
-	public ImageDisplay() {
+	public ImageDisplay(ControlPanel cpanel) {
+		this.cpanel = cpanel;
 		setVisible(false);
 	}
 	
@@ -69,6 +71,7 @@ public class ImageDisplay extends Canvas {
 				int vm = img.getHeight() / 640 + 1;
 				lm = wm > vm ? wm : vm;
 			}
+			resetControlPanel();
 			this.setPreferredSize(new Dimension(img.getWidth() / lm, img.getHeight() / lm));
 			this.setSize(new Dimension(img.getWidth() / lm, img.getHeight() / lm));
 			this.setVisible(true);
@@ -76,6 +79,11 @@ public class ImageDisplay extends Canvas {
 			JOptionPane.showMessageDialog(this, "Error reading file.", 
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	public void resetControlPanel() {
+		cpanel.reset();
+		cpanel.setAdjustable(true);
 	}
 
 }
