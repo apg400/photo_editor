@@ -9,8 +9,6 @@ import java.awt.Panel;
 
 import javax.swing.JLabel;
 
-import main.AdjustBar;
-
 public class ControlPanel extends Panel {
 	
 	private AdjustBar adjustBars[];

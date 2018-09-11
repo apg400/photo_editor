@@ -1,4 +1,4 @@
-package main;
+package features;
 
 import java.awt.Canvas;
 import java.awt.Color;

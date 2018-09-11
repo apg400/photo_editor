@@ -1,4 +1,4 @@
-package main;
+package features;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -8,27 +8,19 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 public class ImageDisplay extends Canvas {
 	
 	private File file;
 	private BufferedImage img;
-	private int mode; // 0 - RGB, 1 - HSB
 	
 	public ImageDisplay() {
-		mode = 0;
-	}
-	
-	public Dimension getMinimumSize() {
-		return new Dimension(50, 50);
+		setVisible(false);
 	}
 	
 	public Dimension getMaximumSize() {
-		return new Dimension(1000, 1000);
-	}
-	
-	public Dimension getPreferredSize() {
-		return new Dimension(200, 200);
+		return new Dimension(874, 648);
 	}
 	
 	public BufferedImage render() {
@@ -38,12 +30,10 @@ public class ImageDisplay extends Canvas {
 			for (int x = 0; x < img2.getWidth(); x++) {
 				Color tc = new Color(img.getRGB(x, y));
 				float hsbVals[] = Color.RGBtoHSB(tc.getRed(), tc.getGreen(), tc.getBlue(), null);
-				Color color2;
-				if (mode == 0) {
-					color2 = new Color(tc.getRed(), tc.getGreen(), tc.getBlue());
-				} else {
-					color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
-				}
+				Color color2;			
+				color2 = new Color(tc.getRed(), tc.getGreen(), tc.getBlue());
+//				
+//				color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
 				g.setColor(color2);
 				g.fillRect(x, y, 1, 1);
 			}
@@ -59,11 +49,8 @@ public class ImageDisplay extends Canvas {
 					Color tc = new Color(img.getRGB(x * img.getWidth() / getWidth(), y * img.getHeight() / getHeight()));
 					float hsbVals[] = Color.RGBtoHSB(tc.getRed(), tc.getGreen(), tc.getBlue(), null);
 					Color color2;
-					if (mode == 0) {
-						color2 = new Color(tc.getRed(), tc.getGreen(), tc.getBlue());
-					} else {
-						color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
-					}
+					color2 = new Color(tc.getRed(), tc.getGreen(), tc.getBlue());
+//					color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
 					g.setColor(color2);
 					g.fillRect(x, y, 1, 1);
 				}
@@ -86,10 +73,9 @@ public class ImageDisplay extends Canvas {
 			this.setSize(new Dimension(img.getWidth() / lm, img.getHeight() / lm));
 			this.setVisible(true);
 		} catch(Exception e) {
-			System.out.println("Fail to open image.");
+			JOptionPane.showMessageDialog(this, "Error reading file.", 
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		//System.out.printf("ID height: %d\nwidth: %d\n", this.getHeight(), this.getWidth());
-		//repaint();//0, 0, getWidth(), getHeight());
 	}
 
 }
