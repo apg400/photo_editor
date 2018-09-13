@@ -46,17 +46,26 @@ public class ImageDisplay extends Canvas {
 	
 	public void paint(Graphics g) {
 		if (img != null) {
+			int red = 0;
+			int green = 0;
+			int blue = 0;
 			for (int y = 0; y < getHeight(); y++) {
 				for (int x = 0; x < getWidth(); x++) {
 					Color tc = new Color(img.getRGB(x * img.getWidth() / getWidth(), y * img.getHeight() / getHeight()));
+					red = cpanel.getAdjustBar(0).evalColor(tc.getRed());
+					green = cpanel.getAdjustBar(1).evalColor(tc.getGreen());
+					blue = cpanel.getAdjustBar(2).evalColor(tc.getBlue());
 					float hsbVals[] = Color.RGBtoHSB(tc.getRed(), tc.getGreen(), tc.getBlue(), null);
 					Color color2;
-					color2 = new Color(tc.getRed(), tc.getGreen(), tc.getBlue());
+					color2 = new Color(red, green, blue); //Color(tc.getRed(), tc.getGreen(), tc.getBlue());
 //					color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
 					g.setColor(color2);
 					g.fillRect(x, y, 1, 1);
 				}
 			}
+			System.out.printf("Red: %d", red);
+			System.out.printf("Green: %d", green);
+			System.out.printf("Blue: %d", blue);
 		}
 	}
 	

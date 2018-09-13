@@ -17,6 +17,7 @@ public class AdjustBar extends Canvas implements MouseListener, MouseMotionListe
 	private int ypxl;
 	private boolean isPressed;
 	int height;
+	int prevx;
 	
 	public AdjustBar() {
 		setPreferredSize(new Dimension(220, 40));
@@ -65,8 +66,15 @@ public class AdjustBar extends Canvas implements MouseListener, MouseMotionListe
 		repaint();
 	}
 	
+	public int evalColor(int input) {
+		int width = getWidth()/2 - 6;
+		int output = (int) (((float) xpxl) / ((float) width) * input);
+		return output;
+	}
+	
 	public void onClick(MouseEvent e) {
 		if (e.getX() > 30 && e.getX() < getWidth()-30 && isPressed) {
+			prevx = xpxl;
 			xpxl = e.getX() - 6;
 			refresh();
 		}

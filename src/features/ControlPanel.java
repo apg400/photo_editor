@@ -1,19 +1,24 @@
 package features;
 
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
-public class ControlPanel extends Panel {
+public class ControlPanel extends Panel implements ActionListener {
 	
 	private AdjustBar adjustBars[];
 	private JLabel labels[];
 	private JLabel title;
+	private Button apply;
+	private ImageDisplay imgDisp;
 	
 	public ControlPanel() {
 		setLayout(new FlowLayout());
@@ -47,6 +52,11 @@ public class ControlPanel extends Panel {
 			adjustPanel.add(adjustBars[i]);
 		}
 		this.add(adjustPanel);
+		
+		apply = new Button();
+		apply.setLabel("Apply");
+		apply.addActionListener(this);
+		this.add(apply);
 	}
 	
 	public void reset() {
@@ -59,6 +69,26 @@ public class ControlPanel extends Panel {
 		for (int i = 0; i < adjustBars.length; i++) {
 			adjustBars[i].setEnabled(b);
 		}
+	}
+	
+	public AdjustBar getAdjustBar(int x) {
+		return adjustBars[x];
+	}
+	
+	public AdjustBar[] getAdjustBarArray() {
+		return adjustBars;
+	}
+	
+	public void setImageDisplay(ImageDisplay imgDisp) {
+		this.imgDisp = imgDisp;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (apply.equals(e.getSource())) {
+			imgDisp.repaint();
+		}
+		
 	}
 	
 	
