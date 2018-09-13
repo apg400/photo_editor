@@ -12,12 +12,11 @@ import java.awt.image.BufferedImage;
 
 public class AdjustBar extends Canvas implements MouseListener, MouseMotionListener{
 
-	BufferedImage screen;
+	private BufferedImage screen;
 	private int xpxl;
 	private int ypxl;
 	private boolean isPressed;
-	int height;
-	int prevx;
+	private int height;
 	
 	public AdjustBar() {
 		setPreferredSize(new Dimension(220, 40));
@@ -66,15 +65,22 @@ public class AdjustBar extends Canvas implements MouseListener, MouseMotionListe
 		repaint();
 	}
 	
-	public int evalColor(int input) {
+	public int evalRGBColor(int input) {
 		int width = getWidth()/2 - 6;
-		int output = (int) (((float) xpxl) / ((float) width) * input);
+		int calc = (int) (((float) xpxl) / ((float) width) * input);
+		int output = calc >= 255 ? 255 : calc;
+		return output;
+	}
+	
+	public float evalHSBColor(float input) {
+		int width = getWidth()/2 - 6;
+		float calc = (((float) xpxl) / ((float) width) * input);
+		float output = calc >= 1.0f ? 1.0f : calc;
 		return output;
 	}
 	
 	public void onClick(MouseEvent e) {
 		if (e.getX() > 30 && e.getX() < getWidth()-30 && isPressed) {
-			prevx = xpxl;
 			xpxl = e.getX() - 6;
 			refresh();
 		}

@@ -15,10 +15,24 @@ public class ImageDisplay extends Canvas {
 	private File file;
 	private BufferedImage img;
 	private ControlPanel cpanel;
+	private int[] rgb;
+	private int[] hsb;
+	private boolean rgbMode;
+	
 	
 	public ImageDisplay(ControlPanel cpanel) {
 		this.cpanel = cpanel;
 		setVisible(false);
+		
+		rgbMode = true;
+		
+		rgb = new int[3];
+		hsb = new int[3];
+		
+		for (int i = 0; i < rgb.length; i++) {
+			rgb[i] = 0;
+			hsb[i] = 0;
+		}
 	}
 	
 	public Dimension getMaximumSize() {
@@ -28,15 +42,25 @@ public class ImageDisplay extends Canvas {
 	public BufferedImage render() {
 		BufferedImage img2 = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics g  = img2.getGraphics();
+		Color c1, c2;
 		for (int y = 0; y < img2.getHeight(); y++) {
 			for (int x = 0; x < img2.getWidth(); x++) {
-				Color tc = new Color(img.getRGB(x, y));
-				float hsbVals[] = Color.RGBtoHSB(tc.getRed(), tc.getGreen(), tc.getBlue(), null);
-				Color color2;			
-				color2 = new Color(tc.getRed(), tc.getGreen(), tc.getBlue());
-//				
-//				color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
-				g.setColor(color2);
+				c1 = new Color(img.getRGB(x, y));
+				
+				if (rgbMode) {
+					rgb[0] = cpanel.getAdjustBar(0).evalRGBColor(c1.getRed());
+					rgb[1] = cpanel.getAdjustBar(1).evalRGBColor(c1.getGreen());
+					rgb[2] = cpanel.getAdjustBar(2).evalRGBColor(c1.getBlue());
+					c2 = new Color(rgb[0], rgb[1], rgb[2]);
+				} else {
+					float hsb[] = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
+					hsb[0] = cpanel.getAdjustBar(0).evalHSBColor(hsb[0]);
+					hsb[1] = cpanel.getAdjustBar(1).evalHSBColor(hsb[1]);
+					hsb[2] = cpanel.getAdjustBar(2).evalHSBColor(hsb[2]);
+					c2 = new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+				}
+				
+				g.setColor(c2);
 				g.fillRect(x, y, 1, 1);
 			}
 		}
@@ -46,26 +70,28 @@ public class ImageDisplay extends Canvas {
 	
 	public void paint(Graphics g) {
 		if (img != null) {
-			int red = 0;
-			int green = 0;
-			int blue = 0;
+			Color c1, c2;
 			for (int y = 0; y < getHeight(); y++) {
 				for (int x = 0; x < getWidth(); x++) {
-					Color tc = new Color(img.getRGB(x * img.getWidth() / getWidth(), y * img.getHeight() / getHeight()));
-					red = cpanel.getAdjustBar(0).evalColor(tc.getRed());
-					green = cpanel.getAdjustBar(1).evalColor(tc.getGreen());
-					blue = cpanel.getAdjustBar(2).evalColor(tc.getBlue());
-					float hsbVals[] = Color.RGBtoHSB(tc.getRed(), tc.getGreen(), tc.getBlue(), null);
-					Color color2;
-					color2 = new Color(red, green, blue); //Color(tc.getRed(), tc.getGreen(), tc.getBlue());
-//					color2 = new Color(Color.HSBtoRGB(hsbVals[0], hsbVals[1], hsbVals[2]));
-					g.setColor(color2);
+					c1 = new Color(img.getRGB(x * img.getWidth() / getWidth(), y * img.getHeight() / getHeight()));
+					
+					if (rgbMode) {
+						rgb[0] = cpanel.getAdjustBar(0).evalRGBColor(c1.getRed());
+						rgb[1] = cpanel.getAdjustBar(1).evalRGBColor(c1.getGreen());
+						rgb[2] = cpanel.getAdjustBar(2).evalRGBColor(c1.getBlue());
+						c2 = new Color(rgb[0], rgb[1], rgb[2]);
+					} else {
+						float hsb[] = Color.RGBtoHSB(c1.getRed(), c1.getGreen(), c1.getBlue(), null);
+						hsb[0] = cpanel.getAdjustBar(0).evalHSBColor(hsb[0]);
+						hsb[1] = cpanel.getAdjustBar(1).evalHSBColor(hsb[1]);
+						hsb[2] = cpanel.getAdjustBar(2).evalHSBColor(hsb[2]);
+						c2 = new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+					}
+					
+					g.setColor(c2);
 					g.fillRect(x, y, 1, 1);
 				}
 			}
-			System.out.printf("Red: %d", red);
-			System.out.printf("Green: %d", green);
-			System.out.printf("Blue: %d", blue);
 		}
 	}
 	
@@ -93,6 +119,10 @@ public class ImageDisplay extends Canvas {
 	public void resetControlPanel() {
 		cpanel.reset();
 		cpanel.setAdjustable(true);
+	}
+	
+	public void setRGBMode(boolean b) {
+		rgbMode = b;
 	}
 
 }

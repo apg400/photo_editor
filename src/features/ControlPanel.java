@@ -1,5 +1,6 @@
 package features;
 
+import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -11,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 
 public class ControlPanel extends Panel implements ActionListener {
 	
@@ -18,29 +20,31 @@ public class ControlPanel extends Panel implements ActionListener {
 	private JLabel labels[];
 	private JLabel title;
 	private Button apply;
+	private JRadioButton hsbSwitch;
 	private ImageDisplay imgDisp;
 	
 	public ControlPanel() {
 		setLayout(new FlowLayout());
 		setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		setVisible(true);
-		setBackground(Color.white);
+		setBackground(Color.WHITE);
 		setPreferredSize(new Dimension(220, 648));
 		setSize(new Dimension(220, 648));
 		
-		title = new JLabel(" COLOR ADJUSTMENT ----------------");
+		title = new JLabel(" COLOR ADJUSTMENT");
 		title.setPreferredSize(new Dimension(220, 30));
 		title.setSize(new Dimension(220, 30));
 		title.setForeground(Color.BLACK);
-		title.setVerticalAlignment(JLabel.BOTTOM);
+		title.setVerticalAlignment(JLabel.CENTER);
+		title.setHorizontalAlignment(JLabel.CENTER);
 		this.add(title);
 		
 		Panel adjustPanel = new Panel();
 		adjustPanel.setLayout(new GridLayout(12,1));
 		adjustPanel.setBackground(Color.WHITE);
-		String text[] = {"   Red", "   Green", "   Blue", "   Hue", "   Saturation", "   Brightness"};
-		labels = new JLabel[6];
-		adjustBars = new AdjustBar[6];
+		String text[] = {"   Red", "   Green", "   Blue"};
+		labels = new JLabel[3];
+		adjustBars = new AdjustBar[3];
 		for (int i = 0; i < adjustBars.length; i++) {
 			labels[i] = new JLabel(text[i]);
 			labels[i].setBackground(Color.RED);
@@ -53,10 +57,20 @@ public class ControlPanel extends Panel implements ActionListener {
 		}
 		this.add(adjustPanel);
 		
+		Panel buttonPanel = new Panel();
+		buttonPanel.setLayout(new GridLayout(1, 2));
 		apply = new Button();
-		apply.setLabel("Apply");
+		apply.setLabel("    Apply    ");
 		apply.addActionListener(this);
-		this.add(apply);
+		apply.setEnabled(false);
+		hsbSwitch = new JRadioButton();
+		hsbSwitch.setText("HSB");
+		hsbSwitch.addActionListener(this);
+		hsbSwitch.setEnabled(false);
+		buttonPanel.add(hsbSwitch);
+		buttonPanel.add(apply);
+		
+		this.add(buttonPanel);
 	}
 	
 	public void reset() {
@@ -69,6 +83,8 @@ public class ControlPanel extends Panel implements ActionListener {
 		for (int i = 0; i < adjustBars.length; i++) {
 			adjustBars[i].setEnabled(b);
 		}
+		apply.setEnabled(b);
+		hsbSwitch.setEnabled(b);
 	}
 	
 	public AdjustBar getAdjustBar(int x) {
@@ -87,9 +103,21 @@ public class ControlPanel extends Panel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (apply.equals(e.getSource())) {
 			imgDisp.repaint();
+		} else if (hsbSwitch.equals(e.getSource())) {
+			if (hsbSwitch.isSelected()) {
+				labels[0].setText("   Hue");
+				labels[1].setText("   Saturation");
+				labels[2].setText("   Brightness");
+				imgDisp.setRGBMode(false);
+			} else {
+				labels[0].setText("   Red");
+				labels[1].setText("   Green");
+				labels[2].setText("   Blue");
+				imgDisp.setRGBMode(true);
+			}
+			reset();
+			imgDisp.repaint();
 		}
-		
 	}
-	
 	
 }
