@@ -1,6 +1,5 @@
 package features;
 
-import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
@@ -16,14 +15,21 @@ import javax.swing.JRadioButton;
 
 public class ControlPanel extends Panel implements ActionListener {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private AdjustBar adjustBars[];
 	private JLabel labels[];
 	private JLabel title;
 	private Button apply;
 	private JRadioButton hsbSwitch;
-	private ImageDisplay imgDisp;
 	
-	public ControlPanel() {
+	private boolean rgb;
+	private ImageCommand imageCommand;
+	
+	//
+	public ControlPanel(ImageCommand imageCommand) {
+		this.imageCommand = imageCommand;
+		rgb = true;
 		setLayout(new FlowLayout());
 		setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		setVisible(true);
@@ -47,7 +53,6 @@ public class ControlPanel extends Panel implements ActionListener {
 		adjustBars = new AdjustBar[3];
 		for (int i = 0; i < adjustBars.length; i++) {
 			labels[i] = new JLabel(text[i]);
-			labels[i].setBackground(Color.RED);
 			labels[i].setHorizontalAlignment(JLabel.LEFT);
 			labels[i].setVerticalAlignment(JLabel.BOTTOM);
 			adjustPanel.add(labels[i]);
@@ -73,12 +78,20 @@ public class ControlPanel extends Panel implements ActionListener {
 		this.add(buttonPanel);
 	}
 	
+	//
+	public boolean isRGB() {
+		return rgb;
+	}
+	
+	//
 	public void reset() {
 		for (int i = 0; i < adjustBars.length; i++) {
 			adjustBars[i].reset();
 		}
+		this.setAdjustable(true);
 	}
 	
+	//
 	public void setAdjustable(boolean b) {
 		for (int i = 0; i < adjustBars.length; i++) {
 			adjustBars[i].setEnabled(b);
@@ -87,36 +100,50 @@ public class ControlPanel extends Panel implements ActionListener {
 		hsbSwitch.setEnabled(b);
 	}
 	
-	public AdjustBar getAdjustBar(int x) {
-		return adjustBars[x];
-	}
+	// Calculates the RGB values based on the position of the bar.
+	public Color evalRGBColor(int[] og_rgb) {
+		int rgb[] = new int[3];
+		int xcenter = adjustBars[0].getXCenter();
 	
-	public AdjustBar[] getAdjustBarArray() {
-		return adjustBars;
-	}
-	
-	public void setImageDisplay(ImageDisplay imgDisp) {
-		this.imgDisp = imgDisp;
-	}
+		for (int i = 0; i < 3; i++) {
+		    int calc = (adjustBars[i].getXPos() * og_rgb[i]) / xcenter; 
+		    rgb[i] = (calc >= 255) ? 255 : calc;
+		}
+		
+		return new Color(rgb[0], rgb[1], rgb[2]);
+	}	
+		
+	//
+	public Color evalHSBColor(float[] og_hsb) {
+		float hsb[] = new float[3];
+		int width = adjustBars[0].getBarWidth(); //getWidth()/2 - 6;
+		
+		for (int i = 0; i < 3; i++) {
+		    float calc = (((float) adjustBars[i].getXPos()) / ((float) width) * og_hsb[i]);
+		    hsb[i] = calc >= 1.0f ? 1.0f : calc;
+		}
+		return new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
+	}	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (apply.equals(e.getSource())) {
-			imgDisp.repaint();
+			imageCommand.applyChanges();
+			
 		} else if (hsbSwitch.equals(e.getSource())) {
 			if (hsbSwitch.isSelected()) {
+				rgb = false;
 				labels[0].setText("   Hue");
 				labels[1].setText("   Saturation");
 				labels[2].setText("   Brightness");
-				imgDisp.setRGBMode(false);
 			} else {
+				rgb = true;
 				labels[0].setText("   Red");
 				labels[1].setText("   Green");
 				labels[2].setText("   Blue");
-				imgDisp.setRGBMode(true);
 			}
 			reset();
-			imgDisp.repaint();
+			imageCommand.resetImage();
 		}
 	}
 	

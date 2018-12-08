@@ -10,83 +10,78 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 
-public class AdjustBar extends Canvas implements MouseListener, MouseMotionListener{
+public class AdjustBar extends Canvas implements MouseListener, MouseMotionListener {
 
+	private static final long serialVersionUID = 1L;
+	
 	private BufferedImage screen;
-	private int xpxl;
-	private int ypxl;
+	private int xpos; // x position of circle
+	private int ypos; // y position of circle
 	private boolean isPressed;
-	private int height;
+	private int height, xcenter;
 	
 	public AdjustBar() {
 		setPreferredSize(new Dimension(220, 40));
 		setSize(220, 40);
-		xpxl = getWidth()/2 - 6;
-		ypxl = getHeight()/2 - 6;
+		xpos = getWidth()/2 - 6;
+		ypos = getHeight()/2 - 6;
 		height = getHeight()/2;
+		xcenter = getWidth()/2 - 6;
 		isPressed = false;
 		screen = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		refresh();
+		update();
 	}
 	
+	//
+	public int getXPos() {
+		return xpos;
+	}
+	
+	//
+	public int getXCenter() {
+		return xcenter;
+	}
+	
+	//
+	public int getBarWidth() {
+		return getWidth()/2 - 6;
+	}
+	
+	//
 	public void paint(Graphics g) {
 		g.drawImage(screen, 0, 0, this);
 	}
 	
-	public void refresh() {
+	//
+	public void update() {
 		Graphics2D g = (Graphics2D) screen.getGraphics();
-		g.setColor(Color.WHITE); //yellow to see size of canvas
+		g.setColor(Color.WHITE); 
 		g.fillRect(0, 0, getWidth(), getHeight());
 		g.setColor(Color.BLACK);
 		g.drawLine(30, height, getWidth()-30, height);
 		g.drawLine(30, height - 5, 30, height + 5);
 		g.drawLine(getWidth()-30, height - 5, getWidth()-30, height + 5);
-		//g.setColor(Color.BLACK);
 		g.drawLine(getWidth()/2, height - 8, getWidth()/2, height - 16);
+		//
 		g.setColor(Color.WHITE);
-		g.fillOval(xpxl, ypxl, 12, 12);
+		g.fillOval(xpos, ypos, 12, 12);
 		g.setColor(Color.LIGHT_GRAY);
-		g.drawOval(xpxl, ypxl, 12, 12);
+		g.drawOval(xpos, ypos, 12, 12);
 		repaint();
 	}
 	
-	public void reset() {
-		Graphics2D g = (Graphics2D) screen.getGraphics();
-		g.setColor(Color.WHITE); //yellow to see size of canvas
-		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(Color.BLACK);
-		g.drawLine(30, height, getWidth()-30, height);
-		g.drawLine(30, height - 5, 30, height + 5);
-		g.drawLine(getWidth()-30, height - 5, getWidth()-30, height + 5);
-		//g.setColor(Color.BLACK);
-		g.drawLine(getWidth()/2, height - 8, getWidth()/2, height - 16);
-		g.setColor(Color.WHITE);
-		g.fillOval(getWidth()/2 - 6, height - 6, 12, 12);
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawOval(getWidth()/2 - 6, height - 6, 12, 12);
-		repaint();
-	}
-	
-	public int evalRGBColor(int input) {
-		int width = getWidth()/2 - 6;
-		int calc = (int) (((float) xpxl) / ((float) width) * input);
-		int output = calc >= 255 ? 255 : calc;
-		return output;
-	}
-	
-	public float evalHSBColor(float input) {
-		int width = getWidth()/2 - 6;
-		float calc = (((float) xpxl) / ((float) width) * input);
-		float output = calc >= 1.0f ? 1.0f : calc;
-		return output;
+	//
+	public void reset() {		
+		xpos = xcenter;
+		this.update();
 	}
 	
 	public void onClick(MouseEvent e) {
 		if (e.getX() > 30 && e.getX() < getWidth()-30 && isPressed) {
-			xpxl = e.getX() - 6;
-			refresh();
+			xpos = e.getX() - 6;
+			update();
 		}
 	}
 	
@@ -108,9 +103,12 @@ public class AdjustBar extends Canvas implements MouseListener, MouseMotionListe
 		onClick(e);
 	}
 	
+	//
+	//
+	// Unneeded functions from MouseListener and MouseMotionListener
 	@Override
 	public void mouseMoved(MouseEvent e) {}
-
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {}
 
